@@ -1,3 +1,10 @@
+// McGill University
+// COMP 310 - ECSE 427
+// Assignment 1: OS Shell
+// Authors:
+// Rambod Azimi - 260911967
+// Cindy Irawan - 261132839
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h> 
