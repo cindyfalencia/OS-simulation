@@ -1,9 +1,16 @@
+// McGill University
+// COMP 310 - ECSE 427
+// Assignment 1: OS Shell
+// Authors:
+// Rambod Azimi - 260911967
+// Cindy Irawan - 261132839
+
 #include<stdlib.h>
 #include<string.h>
 #include<stdio.h>
 
 
-struct memory_struct{
+struct memory_struct {
 	char *var;
 	char *value;
 };
@@ -22,23 +29,22 @@ int match(char *model, char *var) {
 }
 
 char *extract(char *model) {
-	char token='=';    // look for this to find value
-	char value[1000];  // stores the extract value
+	char token='=';    // Look for this to find value
+	char value[1000];  // Stores the extract value
 	int i,j, len=strlen(model);
-	for(i=0;i<len && *(model+i)!=token;i++); // loop till we get there
-	// extract the value
+	for(i=0;i<len && *(model+i)!=token;i++); // Loop till we get there
+	// Extract the value
 	for(i=i+1,j=0;i<len;i++,j++) value[j]=*(model+i);
 	value[j]='\0';
 	return strdup(value);
 }
 
-
 // Shell memory functions
-
-void mem_init(){
+void mem_init() {
 
 	int i;
-	for (i=0; i<1000; i++){		
+	// Initializing all the shellmemory to "none"
+	for(i = 0; i < 1000; i++) {		
 		shellmemory[i].var = "none";
 		shellmemory[i].value = "none";
 	}
@@ -49,16 +55,16 @@ void mem_set_value(char *var_in, char *value_in) {
 	
 	int i;
 
-	for (i=0; i<1000; i++){
-		if (strcmp(shellmemory[i].var, var_in) == 0){
+	for (i = 0; i < 1000; i++) {
+		if (strcmp(shellmemory[i].var, var_in) == 0) {
 			shellmemory[i].value = strdup(value_in);
 			return;
 		} 
 	}
 
-	//Value does not exist, need to find a free spot.
-	for (i=0; i<1000; i++){
-		if (strcmp(shellmemory[i].var, "none") == 0){
+	// Value does not exist, need to find a free spot.
+	for (i = 0; i < 1000; i++) {
+		if (strcmp(shellmemory[i].var, "none") == 0) {
 			shellmemory[i].var = strdup(var_in);
 			shellmemory[i].value = strdup(value_in);
 			return;
@@ -69,12 +75,12 @@ void mem_set_value(char *var_in, char *value_in) {
 
 }
 
-//get value based on input key
+// Get value based on input key
 char *mem_get_value(char *var_in) {
 	int i;
 
-	for (i=0; i<1000; i++){
-		if (strcmp(shellmemory[i].var, var_in) == 0){
+	for (i = 0; i < 1000; i++){
+		if (strcmp(shellmemory[i].var, var_in) == 0) {
 
 			return strdup(shellmemory[i].value);
 		} 

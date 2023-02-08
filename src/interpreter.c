@@ -19,7 +19,7 @@ int badcommand(){
 }
 
 // For run command only
-int badcommandFileDoesNotExist(){
+int badcommandFileDoesNotExist() {
 	printf("%s\n", "Bad command: File not found");
 	return 3;
 }
@@ -32,18 +32,19 @@ int run(char* script);
 int badcommandFileDoesNotExist();
 
 // Interpret commands and their arguments
-int interpreter(char* command_args[], int args_size){
+int interpreter(char* command_args[], int args_size) {
 	int i;
 
-	if ( args_size < 1 || args_size > MAX_ARGS_SIZE){
+	// If the userInput has 0 word or more than 3 words, display error
+	if (args_size < 1 || args_size > MAX_ARGS_SIZE) {
 		return badcommand();
 	}
 
-	for ( i=0; i<args_size; i++){ //strip spaces new line etc
+	for (i = 0; i < args_size; i++){ // Strip spaces new line etc
 		command_args[i][strcspn(command_args[i], "\r\n")] = 0;
 	}
 
-	if (strcmp(command_args[0], "help")==0){
+	if (strcmp(command_args[0], "help")==0) {
 	    //help
 	    if (args_size != 1) return badcommand();
 	    return help();
@@ -69,7 +70,8 @@ int interpreter(char* command_args[], int args_size){
 	} else return badcommand();
 }
 
-int help(){
+// Help command which displays all the commands
+int help() {
 
 	char help_string[] = "COMMAND			DESCRIPTION\n \
 help			Displays all the commands\n \
@@ -81,12 +83,13 @@ run SCRIPT.TXT		Executes the file SCRIPT.TXT\n ";
 	return 0;
 }
 
-int quit(){
+// Terminate the shell with Bye!
+int quit() {
 	printf("%s\n", "Bye!");
 	exit(0);
 }
 
-int set(char* var, char* value){
+int set(char* var, char* value) {
 	char *link = "=";
 	char buffer[1000];
 	strcpy(buffer, var);
@@ -99,26 +102,26 @@ int set(char* var, char* value){
 
 }
 
-int print(char* var){
+int print(char* var) {
 	printf("%s\n", mem_get_value(var)); 
 	return 0;
 }
 
-int run(char* script){
+int run(char* script) {
 	int errCode = 0;
 	char line[1000];
-	FILE *p = fopen(script,"rt");  // the program is in a file
+	FILE *p = fopen(script,"rt");  // The program is in a file
 
 	if(p == NULL){
 		return badcommandFileDoesNotExist();
 	}
 
 	fgets(line,999,p);
-	while(1){
+	while(1) {
 		errCode = parseInput(line);	// which calls interpreter()
 		memset(line, 0, sizeof(line));
 
-		if(feof(p)){
+		if(feof(p)) {
 			break;
 		}
 		fgets(line,999,p);
