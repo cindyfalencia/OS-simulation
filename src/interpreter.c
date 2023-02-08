@@ -44,13 +44,13 @@ int interpreter(char* command_args[], int args_size) {
 		command_args[i][strcspn(command_args[i], "\r\n")] = 0;
 	}
 
-	if (strcmp(command_args[0], "help")==0) {
-	    //help
+	if (strcmp(command_args[0], "help") == 0) {
+	    // help
 	    if (args_size != 1) return badcommand();
 	    return help();
 	
-	} else if (strcmp(command_args[0], "quit")==0) {
-		//quit
+	} else if (strcmp(command_args[0], "quit") == 0) {
+		// quit
 		if (args_size != 1) return badcommand();
 		return quit();
 
@@ -78,6 +78,12 @@ help			Displays all the commands\n \
 quit			Exits / terminates the shell with “Bye!”\n \
 set VAR STRING		Assigns a value to shell memory\n \
 print VAR		Displays the STRING assigned to VAR\n \
+echo STRING		Displays an alphanumeric STRING\n \
+echo $VAR		Displays the value assigned to VAR\n \
+my_ls			Lists all the files in the current directory\n \
+my_mkdir DIRNAME	Creates a new directory with the name DIRNAME\n \
+my_touch FILENAME	Creates a new empty file with the name FILENAME\n \
+my_cd DIRNAME		Changes current directory to the directory DIRNAME\n \
 run SCRIPT.TXT		Executes the file SCRIPT.TXT\n ";
 	printf("%s\n", help_string);
 	return 0;

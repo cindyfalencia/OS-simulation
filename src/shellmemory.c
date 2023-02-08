@@ -19,8 +19,8 @@ struct memory_struct shellmemory[1000];
 
 // Helper functions
 int match(char *model, char *var) {
-	int i, len=strlen(var), matchCount=0;
-	for(i=0;i<len;i++)
+	int i, len = strlen(var), matchCount = 0;
+	for(i = 0; i < len; i++)
 		if (*(model+i) == *(var+i)) matchCount++;
 	if (matchCount == len)
 		return 1;
@@ -29,13 +29,13 @@ int match(char *model, char *var) {
 }
 
 char *extract(char *model) {
-	char token='=';    // Look for this to find value
+	char token = '=';    // Look for this to find value
 	char value[1000];  // Stores the extract value
-	int i,j, len=strlen(model);
-	for(i=0;i<len && *(model+i)!=token;i++); // Loop till we get there
+	int i, j, len = strlen(model);
+	for(i = 0; i < len && *(model+i) != token; i++); // Loop till we get there
 	// Extract the value
-	for(i=i+1,j=0;i<len;i++,j++) value[j]=*(model+i);
-	value[j]='\0';
+	for(i = i+1, j = 0; i < len; i++, j++) value[j] =* (model+i);
+	value[j] = '\0';
 	return strdup(value);
 }
 
