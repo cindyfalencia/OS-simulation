@@ -50,18 +50,15 @@ void mem_init() {
 	}
 }
 
-// Set key value pair
+// Set key value pair (single alphanumeric token)
 void mem_set_value(char *var_in, char *value_in) {
-	
 	int i;
-
 	for (i = 0; i < 1000; i++) {
 		if (strcmp(shellmemory[i].var, var_in) == 0) {
 			shellmemory[i].value = strdup(value_in);
 			return;
 		} 
 	}
-
 	// Value does not exist, need to find a free spot.
 	for (i = 0; i < 1000; i++) {
 		if (strcmp(shellmemory[i].var, "none") == 0) {
@@ -70,9 +67,27 @@ void mem_set_value(char *var_in, char *value_in) {
 			return;
 		} 
 	}
-
 	return;
+}
 
+// Enhanced version of mem_set_value function which supports values up to 5 alphanumeric tokens
+void mem_set_value_enhanced(char *var_in, char value_in[]) {
+	int i;
+	for (i = 0; i < 1000; i++) {
+		if (strcmp(shellmemory[i].var, var_in) == 0) {
+			shellmemory[i].value = strdup(value_in);
+			return;
+		} 
+	}
+	// Value does not exist, need to find a free spot.
+	for (i = 0; i < 1000; i++) {
+		if (strcmp(shellmemory[i].var, "none") == 0) {
+			shellmemory[i].var = strdup(var_in);
+			shellmemory[i].value = strdup(value_in);
+			return;
+		} 
+	}
+	return;
 }
 
 // Get value based on input key

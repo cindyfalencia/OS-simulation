@@ -56,7 +56,7 @@ int parseInput(char ui[]) { // ui is userInput
     int b;                            
     int w = 0; // wordID (number of words in userInput)  
     int errorCode;
-    for(a = 0; ui[a]==' ' && a < 1000; a++);        // Skip white spaces
+    for(a = 0; ui[a] == ' ' && a < 1000; a++);        // Skip white spaces
     while(ui[a] != '\n' && ui[a] != '\0' && a < 1000) {
         for(b = 0; ui[a] != ';' && ui[a] != '\0' && ui[a] != '\n' && ui[a] != ' ' && a < 1000; a++, b++) {
             tmp[b] = ui[a];                        
@@ -71,3 +71,8 @@ int parseInput(char ui[]) { // ui is userInput
     errorCode = interpreter(words, w); // In interpreter.c
     return errorCode;
 }
+
+// emaple of how parseInput and interpreter functions work:
+// consider command: set x 10
+// words[0] = set, words[1] = x, words[2] = 10
+// w = 3

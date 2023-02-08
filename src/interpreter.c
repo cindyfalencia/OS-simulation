@@ -11,10 +11,15 @@
 #include "shellmemory.h"
 #include "shell.h"
 
-int MAX_ARGS_SIZE = 3;
+int MAX_ARGS_SIZE = 10; // Increase it for now...
 
-int badcommand(){
+int badcommand() {
 	printf("%s\n", "Unknown Command");
+	return 1;
+}
+
+int badcommand_tooManyTokens() {
+	printf("%s\n", "Bad command: Too many tokens");
 	return 1;
 }
 
@@ -24,9 +29,14 @@ int badcommandFileDoesNotExist() {
 	return 3;
 }
 
+// Function prototypes
 int help();
 int quit();
 int set(char* var, char* value);
+int enhancedSet2(char* var, char* value1, char* value2);
+int enhancedSet3(char* var, char* value1, char* value2, char* value3);
+int enhancedSet4(char* var, char* value1, char* value2, char* value3, char* value4);
+int enhancedSet5(char* var, char* value1, char* value2, char* value3, char* value4, char* value5);
 int print(char* var);
 int run(char* script);
 int badcommandFileDoesNotExist();
@@ -54,16 +64,27 @@ int interpreter(char* command_args[], int args_size) {
 		if (args_size != 1) return badcommand();
 		return quit();
 
-	} else if (strcmp(command_args[0], "set")==0) {
+	} else if (strcmp(command_args[0], "set") == 0) {
 		//set
-		if (args_size != 3) return badcommand();	
-		return set(command_args[1], command_args[2]);
+		if (args_size < 3) return badcommand(); 
+		if (args_size > 7) return badcommand_tooManyTokens(); // If more than 5 tokens passed, display too many tokens error message
+		if (args_size == 3) { // Single alphanumeric token
+			return set(command_args[1], command_args[2]);
+		} else if (args_size == 4) { // 2 alphanumeric tokens
+			return enhancedSet2(command_args[1], command_args[2], command_args[3]);
+		} else if (args_size == 5) { // 3 alphanumeric tokens
+			return enhancedSet3(command_args[1], command_args[2], command_args[3], command_args[4]);
+		} else if (args_size == 6) { // 4 alphanumeric tokens
+			return enhancedSet4(command_args[1], command_args[2], command_args[3], command_args[4], command_args[5]);
+		} else if (args_size == 7) { // 5 alphanumeric tokens
+			return enhancedSet5(command_args[1], command_args[2], command_args[3], command_args[4], command_args[5], command_args[6]);
+		}
 	
-	} else if (strcmp(command_args[0], "print")==0) {
+	} else if (strcmp(command_args[0], "print") == 0) {
 		if (args_size != 2) return badcommand();
 		return print(command_args[1]);
 	
-	} else if (strcmp(command_args[0], "run")==0) {
+	} else if (strcmp(command_args[0], "run") == 0) {
 		if (args_size != 2) return badcommand();
 		return run(command_args[1]);
 	
@@ -105,7 +126,111 @@ int set(char* var, char* value) {
 	mem_set_value(var, value);
 
 	return 0;
+}
 
+// set command with 2 alphanumeric tokens
+int enhancedSet2(char* var, char* value1, char* value2) {
+	char *link = "=";
+	char *space = " ";
+	char buffer[1000];
+	char buffer2[1000];
+	strcpy(buffer, var);
+	strcat(buffer, link);
+	strcat(buffer, value1);
+	strcat(buffer, space);
+	strcat(buffer, value2);
+
+	strcpy(buffer2, value1);
+	strcat(buffer2, space);
+	strcat(buffer2, value2);
+
+	mem_set_value_enhanced(var, buffer2);
+
+	return 0;
+}
+
+// set command with 3 alphanumeric tokens
+int enhancedSet3(char* var, char* value1, char* value2, char* value3) {
+	char *link = "=";
+	char *space = " ";
+	char buffer[1000];
+	char buffer2[1000];
+	strcpy(buffer, var);
+	strcat(buffer, link);
+	strcat(buffer, value1);
+	strcat(buffer, space);
+	strcat(buffer, value2);
+	strcat(buffer, space);
+	strcat(buffer, value3);
+
+	strcpy(buffer2, value1);
+	strcat(buffer2, space);
+	strcat(buffer2, value2);
+	strcat(buffer2, space);
+	strcat(buffer2, value3);
+
+	mem_set_value_enhanced(var, buffer2);
+	return 0;
+}
+
+// set command with 4 alphanumeric tokens
+int enhancedSet4(char* var, char* value1, char* value2, char* value3, char* value4) {
+	char *link = "=";
+	char *space = " ";
+	char buffer[1000];
+	char buffer2[1000];
+	strcpy(buffer, var);
+	strcat(buffer, link);
+	strcat(buffer, value1);
+	strcat(buffer, space);
+	strcat(buffer, value2);
+	strcat(buffer, space);
+	strcat(buffer, value3);
+	strcat(buffer, space);
+	strcat(buffer, value4);
+
+	strcpy(buffer2, value1);
+	strcat(buffer2, space);
+	strcat(buffer2, value2);
+	strcat(buffer2, space);
+	strcat(buffer2, value3);
+	strcat(buffer2, space);
+	strcat(buffer2, value4);
+
+	mem_set_value_enhanced(var, buffer2);
+	return 0;
+}
+
+// set command with 5 alphanumeric tokens
+int enhancedSet5(char* var, char* value1, char* value2, char* value3, char* value4, char* value5) {
+	char *link = "=";
+	char *space = " ";
+	char buffer[1000];
+	char buffer2[1000];
+	strcpy(buffer, var);
+	strcat(buffer, link);
+	strcat(buffer, value1);
+	strcat(buffer, space);
+	strcat(buffer, value2);
+	strcat(buffer, space);
+	strcat(buffer, value3);
+	strcat(buffer, space);
+	strcat(buffer, value4);
+	strcat(buffer, space);
+	strcat(buffer, value5);
+
+	strcpy(buffer2, value1);
+	strcat(buffer2, space);
+	strcat(buffer2, value2);
+	strcat(buffer2, space);
+	strcat(buffer2, value3);
+	strcat(buffer2, space);
+	strcat(buffer2, value4);
+	strcat(buffer2, space);
+	strcat(buffer2, value5);
+
+	mem_set_value_enhanced(var, buffer2);
+	return 0;
 }
 
 int print(char* var) {
@@ -116,21 +241,21 @@ int print(char* var) {
 int run(char* script) {
 	int errCode = 0;
 	char line[1000];
-	FILE *p = fopen(script,"rt");  // The program is in a file
+	FILE *p = fopen(script, "rt");  // The program is in a file
 
 	if(p == NULL){
 		return badcommandFileDoesNotExist();
 	}
 
-	fgets(line,999,p);
+	fgets(line, 999, p);
 	while(1) {
-		errCode = parseInput(line);	// which calls interpreter()
+		errCode = parseInput(line);	// Which calls interpreter()
 		memset(line, 0, sizeof(line));
 
 		if(feof(p)) {
 			break;
 		}
-		fgets(line,999,p);
+		fgets(line, 999, p);
 	}
 
     fclose(p);
