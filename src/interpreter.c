@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h> 
+#include <unistd.h>
 #include "shellmemory.h"
 #include "shell.h"
 
@@ -16,6 +17,10 @@ int MAX_ARGS_SIZE = 10; // Increase it for now...
 int badcommand() {
 	printf("%s\n", "Unknown Command");
 	return 1;
+}
+
+int badcommand_my_cd() {
+	printf("%s\n", "Bad command: my_cd");
 }
 
 int badcommand_tooManyTokens() {
@@ -88,7 +93,37 @@ int interpreter(char* command_args[], int args_size) {
 		if (args_size != 2) return badcommand();
 		return run(command_args[1]);
 	
+	} else if (strcmp(command_args[0], "my_touch") == 0) {
+		if (args_size != 2) return badcommand(); // Command looks like: my_touch filename (single alphanumeric token for the name)
+		return touch(command_args[1]);
+	} else if (strcmp(command_args[0], "my_cd") == 0) {
+		if (args_size != 2) return badcommand(); // Command looks like: my_cd dirname (single alphanumeric token for the name)
+		return cd(command_args[1]);
 	} else return badcommand();
+}
+
+int cd(char* dirName) {
+// Check to see if there is a directory called "dirName" inside the current directory
+char s[100];
+char *slash = "/";
+char* currentPath = getcwd(s, sizeof(s)); // Get the current directory path using getcwd function in unistd library
+char destinationPath[1000];
+strcpy(destinationPath, currentPath);
+strcat(destinationPath, slash); // Adding /
+strcat(destinationPath, dirName); // Destination path = CurrentPath/DirectoryName
+
+int errorCode = chdir(destinationPath); // Change the directory
+if (errorCode != 0) { 
+	// error if the directory does not exist
+	return badcommand_my_cd();
+}
+return 0;
+}
+
+int touch(char* fileName) {
+	FILE *fp;
+	fp = fopen(fileName, "w"); // Create an empty file in the current directory
+	return 0;
 }
 
 // Help command which displays all the commands
