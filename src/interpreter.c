@@ -3,6 +3,11 @@
 #include <string.h> 
 #include "shellmemory.h"
 #include "shell.h"
+#include <dirent.h>
+#include <errno.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 int MAX_ARGS_SIZE = 3;
 
@@ -16,10 +21,31 @@ int badcommandFileDoesNotExist(){
 	printf("%s\n", "Bad command: File not found");
 	return 3;
 }
+// For ls command only
+void _ls(const char *dir, int op_a, int op_l){
+	struct dirent *d;
+	DIR *dh = opendir(dir);
+	if(!dh){
+		if(errno == ENOENT){
+			perror("Directory does not exit");
+		} else{
+			perror("Unable to read directory");
+		} 
+		exit(EXIT_FAILURE);
+	}
+	while((d = readdir(dh)) != NULL) {
+		if(!op_a && d-> d_name[0] == '.') continue;
+		printf("%s ", d->d_name);
+		printf("\n");
+		if(op_l) printf("\n");
+	}
+	if(!op_l) printf("\n");
+}
 
 int help();
 int quit();
 int set(char* var, char* value);
+int echo(char* var, char* value);
 int print(char* var);
 int run(char* script);
 int badcommandFileDoesNotExist();
@@ -32,7 +58,8 @@ int interpreter(char* command_args[], int args_size){
 		return badcommand();
 	}
 
-	for ( i=0; i<args_size; i++){ //strip spaces new line etc
+	for ( i=0; i<args_size; i++){ 
+		//strip spaces new line etc
 		command_args[i][strcspn(command_args[i], "\r\n")] = 0;
 	}
 
@@ -51,6 +78,14 @@ int interpreter(char* command_args[], int args_size){
 		if (args_size != 3) return badcommand();	
 		return set(command_args[1], command_args[2]);
 	
+	} else if (strcmp(command_args[0], "echo") == 0) {
+		// echo
+		while (*++command_args) {
+			printf("%s", *command_args);
+			if (command_args[1]) printf(" ");
+		}
+		printf("\n");
+		return EXIT_SUCCESS;
 	} else if (strcmp(command_args[0], "print")==0) {
 		if (args_size != 2) return badcommand();
 		return print(command_args[1]);
@@ -59,8 +94,45 @@ int interpreter(char* command_args[], int args_size){
 		if (args_size != 2) return badcommand();
 		return run(command_args[1]);
 	
-	} else return badcommand();
+	} else if (strcmp(command_args[0], "my_ls")==0){
+		// my_ls
+		if(args_size == 1){
+			_ls(".", 0, 0);
+		} else if (args_size == 2){
+			if(command_args[1][0] == "-"){
+				// check if option is passed & options supporting are a & l
+				int op_a = 0, op_l = 0;
+				char *p = (char*)(command_args[1]+1);
+				while(*p){
+					if (*p == 'a') op_a = 1;
+					else if(*p == 'l') op_l = 1;
+					else{
+						perror("Unknown option error");
+						exit(EXIT_FAILURE);
+					}
+					p++;
+				} 
+				_ls(".", op_a, op_l);
+			} else{
+				_ls(command_args[1], 0, 0);
+			}
+		}
+	} else if (strcmp(command_args[0], "my_mkdir") == 0){
+		//my_mkdir dirname
+		int check;
+		command_args[1];
+		check = mkdir(command_args[1], 0777);
+		if (!check)
+        	printf("Directory created\n");
+   		else {
+       		printf("Unable to create directory\n");
+    	}
+	}
+
+	else return badcommand(); 
 }
+	
+
 
 int help(){
 
@@ -68,6 +140,7 @@ int help(){
 help			Displays all the commands\n \
 quit			Exits / terminates the shell with “Bye!”\n \
 set VAR STRING		Assigns a value to shell memory\n \
+echo ALPHANUMERIC\n \
 print VAR		Displays the STRING assigned to VAR\n \
 run SCRIPT.TXT		Executes the file SCRIPT.TXT\n ";
 	printf("%s\n", help_string);
