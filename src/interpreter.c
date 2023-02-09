@@ -123,6 +123,7 @@ return 0;
 int touch(char* fileName) {
 	FILE *fp;
 	fp = fopen(fileName, "w"); // Create an empty file in the current directory
+	fclose(fp);
 	return 0;
 }
 
