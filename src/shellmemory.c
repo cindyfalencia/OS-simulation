@@ -50,6 +50,20 @@ void mem_init() {
 	}
 }
 
+// Checks the shell memory for the variable and returns the value saved in the varibale 
+int check_mem(char *variableName) {
+	int i;
+	for (i = 0; i < 1000; i++) { // Check all the contents of shell memory one by one
+		if (strcmp(shellmemory[i].var, variableName) == 0) { // Success
+			printf("%s\n", shellmemory[i].value); // Print the value associated to the variable
+			return 0;
+		}
+	}
+	// Failure
+	printf("\n"); // Print an empty line in case the variable does not exist in the shell memory
+	return 1;
+}
+
 // Set key value pair (single alphanumeric token)
 void mem_set_value(char *var_in, char *value_in) {
 	int i;

@@ -11,6 +11,10 @@
 #include <unistd.h>
 #include "shellmemory.h"
 #include "shell.h"
+#include <dirent.h>
+#include <errno.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 int MAX_ARGS_SIZE = 10; // Increase it for now...
 
@@ -33,6 +37,43 @@ int badcommandFileDoesNotExist() {
 	printf("%s\n", "Bad command: File not found");
 	return 3;
 }
+
+
+// For ls command only
+void _ls(const char *dir, int op_a, int op_l){
+	struct dirent *d;
+	DIR *dh = opendir(dir);
+	if(!dh){
+		if(errno == ENOENT){
+			perror("Directory does not exit");
+		} else{
+			perror("Unable to read directory");
+		} 
+		exit(EXIT_FAILURE);
+	}
+	while((d = readdir(dh)) != NULL) {
+		if(!op_a && d-> d_name[0] == '.') continue;
+		printf("%s ", d->d_name);
+		printf("\n");
+		if(op_l) printf("\n");
+	}
+	if(!op_l) printf("\n");
+}
+
+int echo (char *name) {
+	// Put the first letter in another chat variable to check whether it is $ or not
+	char firstLetter = name[0];
+
+	// If the name starts with $, then we have to check the shell memory for the varibale
+	if(firstLetter == '$') {
+		char *variableName = (name + 1);	
+		check_mem(variableName); // Calling check_mem to search for the variable in the shell memory
+	} else { // Simple echo command without $
+		printf("%s\n", name);
+	}
+	return 1;
+}
+
 
 // Function prototypes
 int help();
@@ -99,6 +140,43 @@ int interpreter(char* command_args[], int args_size) {
 	} else if (strcmp(command_args[0], "my_cd") == 0) {
 		if (args_size != 2) return badcommand(); // Command looks like: my_cd dirname (single alphanumeric token for the name)
 		return cd(command_args[1]);
+	} else if (strcmp(command_args[0], "echo") == 0) {
+		// echo
+		if (args_size != 2) return badcommand();
+		return echo(command_args[1]);
+	} else if (strcmp(command_args[0], "my_ls") == 0){
+		// my_ls
+		if(args_size == 1){
+			_ls(".", 0, 0);
+		} else if (args_size == 2){
+			if(command_args[1][0] == '-'){
+				// check if option is passed & options supporting are a & l
+				int op_a = 0, op_l = 0;
+				char *p = (char*) (command_args[1] + 1);
+				while(*p) {
+					if (*p == 'a') op_a = 1;
+					else if(*p == 'l') op_l = 1;
+					else{
+						perror("Unknown option error");
+						exit(EXIT_FAILURE);
+					}
+					p++;
+				} 
+				_ls(".", op_a, op_l);
+			} else{
+				_ls(command_args[1], 0, 0);
+			}
+		}
+	} else if (strcmp(command_args[0], "my_mkdir") == 0) {
+		//my_mkdir dirname
+		int check;
+		command_args[1];
+		check = mkdir(command_args[1], 0777);
+		if (!check)
+        	printf("Directory created\n");
+   		else {
+       		printf("Unable to create directory\n");
+    	}
 	} else return badcommand();
 }
 
