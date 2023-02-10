@@ -8,6 +8,7 @@
 #include<stdlib.h>
 #include<string.h>
 #include<stdio.h>
+#include <sys/stat.h>
 
 
 struct memory_struct {
@@ -61,6 +62,20 @@ int check_mem(char *variableName) {
 	}
 	// Failure
 	printf("\n"); // Print an empty line in case the variable does not exist in the shell memory
+	return 1;
+}
+
+// Another version of check_mem function
+int check_mem2(char *variableName) {
+	int i;
+	for (i = 0; i < 1000; i++) { // Check all the contents of shell memory one by one
+		if (strcmp(shellmemory[i].var, variableName) == 0) { // Success
+			mkdir(shellmemory[i].value, 0777); // Create a new directory with the specified name in the current folder
+			return 0;
+		}
+	}
+	// Failure
+	printf("%s\n", "Bad command: my_mkdir");
 	return 1;
 }
 

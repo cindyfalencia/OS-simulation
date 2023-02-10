@@ -25,6 +25,7 @@ int badcommand() {
 
 int badcommand_my_cd() {
 	printf("%s\n", "Bad command: my_cd");
+	return 1;
 }
 
 int badcommand_tooManyTokens() {
@@ -38,9 +39,14 @@ int badcommandFileDoesNotExist() {
 	return 3;
 }
 
+int badcommand_mkdir() {
+	printf("%s\n", "Bad command: my_mkdir");
+	return 1;
+}
+
 
 // For ls command only
-void _ls(const char *dir, int op_a, int op_l){
+void _ls (const char *dir, int op_a, int op_l){
 	struct dirent *d;
 	DIR *dh = opendir(dir);
 	if(!dh){
@@ -61,7 +67,7 @@ void _ls(const char *dir, int op_a, int op_l){
 }
 
 int echo (char *name) {
-	// Put the first letter in another chat variable to check whether it is $ or not
+	// Put the first letter in another char variable to check whether it is $ or not
 	char firstLetter = name[0];
 
 	// If the name starts with $, then we have to check the shell memory for the varibale
@@ -70,6 +76,20 @@ int echo (char *name) {
 		check_mem(variableName); // Calling check_mem to search for the variable in the shell memory
 	} else { // Simple echo command without $
 		printf("%s\n", name);
+	}
+	return 1;
+}
+
+int mymkdir (char *dirname) {
+	// Put the first letter in another char variable to check whether it is $ or not
+	char firstLetter = dirname[0];
+
+	// If the name starts with $, then we have to check the shell memory for the varibale
+	if(firstLetter == '$') {
+		char *variableName = (dirname + 1);	
+		check_mem2(variableName); // Calling check_mem to search for the variable in the shell memory
+	} else { // Simple echo command without $
+		mkdir(dirname, 0777); // Create a new directory with the specified name in the current folder
 	}
 	return 1;
 }
@@ -168,15 +188,11 @@ int interpreter(char* command_args[], int args_size) {
 			}
 		}
 	} else if (strcmp(command_args[0], "my_mkdir") == 0) {
-		//my_mkdir dirname
-		int check;
-		command_args[1];
-		check = mkdir(command_args[1], 0777);
-		if (!check)
-        	printf("Directory created\n");
-   		else {
-       		printf("Unable to create directory\n");
-    	}
+		// my_mkdir dirname
+		if(args_size != 2) {
+			return badcommand();
+		}
+		mymkdir(command_args[1]);
 	} else return badcommand();
 }
 
@@ -357,7 +373,7 @@ int run(char* script) {
 	char line[1000];
 	FILE *p = fopen(script, "rt");  // The program is in a file
 
-	if(p == NULL){
+	if(p == NULL) {
 		return badcommandFileDoesNotExist();
 	}
 
