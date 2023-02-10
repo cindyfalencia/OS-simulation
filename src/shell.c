@@ -43,9 +43,7 @@ int main(int argc, char *argv[]) {
 		if (errorCode == -1) exit(99);	// Ignore all other errors
 		memset(userInput, 0, sizeof(userInput)); // Copies char 0 (NULL) to the first n (size of userInput) characters of userInput (Basically clears the userInput)
 	}
-
 	return 0;
-
 }
 
 // checks for the error code and calls interpreter function in interpreter.c
@@ -71,8 +69,3 @@ int parseInput(char ui[]) { // ui is userInput
     errorCode = interpreter(words, w); // In interpreter.c
     return errorCode;
 }
-
-// emaple of how parseInput and interpreter functions work:
-// consider command: set x 10
-// words[0] = set, words[1] = x, words[2] = 10
-// w = 3

@@ -44,29 +44,36 @@ int badcommand_mkdir() {
 	return 1;
 }
 
-
 // For ls command only
-void _ls (const char *dir, int op_a, int op_l){
+int ls() {
+	char *fileNames[100]; // Array of pointers which stores the files
+	int i = 0;
 	struct dirent *d;
-	DIR *dh = opendir(dir);
-	if(!dh){
-		if(errno == ENOENT){
-			perror("Directory does not exit");
-		} else{
-			perror("Unable to read directory");
-		} 
-		exit(EXIT_FAILURE);
-	}
+	DIR *dh = opendir(".");
 	while((d = readdir(dh)) != NULL) {
-		if(!op_a && d-> d_name[0] == '.') continue;
-		printf("%s ", d->d_name);
-		printf("\n");
-		if(op_l) printf("\n");
+		if(d->d_name[0] == '.') continue; // If the file starts from ".", ignore it and don't print it
+		fileNames[i] = d->d_name; // Store the file name in the array
+		i++;
 	}
-	if(!op_l) printf("\n");
+	// Sorting the fileNames array using the Buuble Sort algorithm
+	char temp[100];
+	for(int ii = 0; ii < i; ii++) {
+		for(int j = 0; j < i - 1 - ii; j++) {
+      		if(strcmp(fileNames[j], fileNames[j+1]) > 0) {
+        		// Swap array[j] and array[j+1]
+        		strcpy(temp, fileNames[j]);
+        		strcpy(fileNames[j], fileNames[j+1]);
+        		strcpy(fileNames[j+1], temp);
+			}
+    	}
+  	}
+	for(int k = 0 ; k < i ; k++) {
+		printf("%s\n", fileNames[k]);
+	}
+	return 1;
 }
 
-int echo (char *name) {
+int echo(char *name) {
 	// Put the first letter in another char variable to check whether it is $ or not
 	char firstLetter = name[0];
 
@@ -94,7 +101,6 @@ int mymkdir (char *dirname) {
 	return 1;
 }
 
-
 // Function prototypes
 int help();
 int quit();
@@ -116,7 +122,7 @@ int interpreter(char* command_args[], int args_size) {
 		return badcommand();
 	}
 
-	for (i = 0; i < args_size; i++){ // Strip spaces new line etc
+	for (i = 0; i < args_size; i++) { // Strip spaces new line etc
 		command_args[i][strcspn(command_args[i], "\r\n")] = 0;
 	}
 
@@ -164,29 +170,12 @@ int interpreter(char* command_args[], int args_size) {
 		// echo
 		if (args_size != 2) return badcommand();
 		return echo(command_args[1]);
-	} else if (strcmp(command_args[0], "my_ls") == 0){
+	} else if (strcmp(command_args[0], "my_ls") == 0) {
 		// my_ls
-		if(args_size == 1){
-			_ls(".", 0, 0);
-		} else if (args_size == 2){
-			if(command_args[1][0] == '-'){
-				// check if option is passed & options supporting are a & l
-				int op_a = 0, op_l = 0;
-				char *p = (char*) (command_args[1] + 1);
-				while(*p) {
-					if (*p == 'a') op_a = 1;
-					else if(*p == 'l') op_l = 1;
-					else{
-						perror("Unknown option error");
-						exit(EXIT_FAILURE);
-					}
-					p++;
-				} 
-				_ls(".", op_a, op_l);
-			} else{
-				_ls(command_args[1], 0, 0);
-			}
+		if(args_size != 1) { // my_ls command should come with no arguments
+			return badcommand();
 		}
+		ls();
 	} else if (strcmp(command_args[0], "my_mkdir") == 0) {
 		// my_mkdir dirname
 		if(args_size != 2) {

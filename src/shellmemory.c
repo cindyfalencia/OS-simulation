@@ -5,9 +5,9 @@
 // Rambod Azimi - 260911967
 // Cindy Irawan - 261132839
 
-#include<stdlib.h>
-#include<string.h>
-#include<stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
 #include <sys/stat.h>
 
 
@@ -123,12 +123,11 @@ void mem_set_value_enhanced(char *var_in, char value_in[]) {
 char *mem_get_value(char *var_in) {
 	int i;
 
-	for (i = 0; i < 1000; i++){
+	for (i = 0; i < 1000; i++) {
 		if (strcmp(shellmemory[i].var, var_in) == 0) {
 
 			return strdup(shellmemory[i].value);
 		} 
 	}
 	return "Variable does not exist";
-
 }
