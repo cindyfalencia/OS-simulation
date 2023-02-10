@@ -19,7 +19,7 @@ int parseInput(char ui[]);
 int main(int argc, char *argv[]) {
 
     // Welcoming message to the user
-	printf("%s\n", "Shell version 1.2 Created February 2023");
+	printf("%s\n", "Shell version 1.2 Created January 2023");
 
     // Calling help function in the interpreter.c which displays all the commands
 	help();

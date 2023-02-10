@@ -16,7 +16,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-int MAX_ARGS_SIZE = 10; // Increase it for now...
+int MAX_ARGS_SIZE = 7; // Maximum arg size is 7 (set x 1 2 3 4 5)
 
 int badcommand() {
 	printf("%s\n", "Unknown Command");
@@ -118,8 +118,10 @@ int interpreter(char* command_args[], int args_size) {
 	int i;
 
 	// If the userInput has 0 word or more than 3 words, display error
-	if (args_size < 1 || args_size > MAX_ARGS_SIZE) {
+	if (args_size < 1) {
 		return badcommand();
+	} else if (args_size > MAX_ARGS_SIZE){
+		return badcommand_tooManyTokens();
 	}
 
 	for (i = 0; i < args_size; i++) { // Strip spaces new line etc
@@ -218,12 +220,6 @@ help			Displays all the commands\n \
 quit			Exits / terminates the shell with “Bye!”\n \
 set VAR STRING		Assigns a value to shell memory\n \
 print VAR		Displays the STRING assigned to VAR\n \
-echo STRING		Displays an alphanumeric STRING\n \
-echo $VAR		Displays the value assigned to VAR\n \
-my_ls			Lists all the files in the current directory\n \
-my_mkdir DIRNAME	Creates a new directory with the name DIRNAME\n \
-my_touch FILENAME	Creates a new empty file with the name FILENAME\n \
-my_cd DIRNAME		Changes current directory to the directory DIRNAME\n \
 run SCRIPT.TXT		Executes the file SCRIPT.TXT\n ";
 	printf("%s\n", help_string);
 	return 0;
