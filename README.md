@@ -1,14 +1,14 @@
-#McGill University
+# McGill University
 
-#COMP 310 - ECSE 427
+# COMP 310 - ECSE 427
 
-#Assignment 1: OS Shell
+# Assignment 1: OS Shell
 
-#Authors:
+# Authors:
 
-##Rambod Azimi - 260911967
+## Rambod Azimi - 260911967
 
-##Cindy Irawan - 261132839
+## Cindy Irawan - 261132839
 
 The following document is based on Professor Christophe Dubach's README for the COMP520-W22 repository.
 
