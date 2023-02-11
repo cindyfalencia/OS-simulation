@@ -39,6 +39,36 @@ int main(int argc, char *argv[]) {
         // Here you should check the unistd library 
         // So that you can find a way to not display $ in the batch mode
 		fgets(userInput, MAX_USER_INPUT - 1, stdin); // Get an string input from the user and save it into userInput array
+
+        // One-Liners
+        if(strstr(userInput, ";") != NULL) { // If the userInput contains semicolon, run the one-liner code to process each token separately
+            int commandLength = 0; // Holding the number of commands
+            // Returns the first token separated by semicolon
+            char *token = strtok(userInput, ";");
+            char *commandArray[10]; // Saving each command in one index of array to process them individually
+            // Keep tokenizing commands separated by semicolon
+            while (token != NULL) {
+                if(token[0] == ' ') { // If the command starts with space, remove it
+                    token++;
+                }
+                commandArray[commandLength] = token;
+                commandLength++;
+                token = strtok(NULL, ";");
+            }
+            if (commandLength > 10) {
+                printf("%s\n", "Badcommand: Too many commands in one line");
+                continue;
+            }
+
+            for(int i = 0 ; i < commandLength ; i++) { // Iterate over each command and execute them individually
+               	errorCode = parseInput(commandArray[i]); // Calls parseInput function below
+		        if (errorCode == -1) exit(99);	// Ignore all other errors
+		        memset(commandArray[i], 0, sizeof(commandArray[i])); // Copies char 0 (NULL) to the first n (size of userInput) characters of userInput (Basically clears the userInput)
+            }
+            continue;
+        }
+        // End of On-Liners
+
 		errorCode = parseInput(userInput); // Calls parseInput function below
 		if (errorCode == -1) exit(99);	// Ignore all other errors
 		memset(userInput, 0, sizeof(userInput)); // Copies char 0 (NULL) to the first n (size of userInput) characters of userInput (Basically clears the userInput)
